@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписание • Школа «Эвридиум» • 9 «А»</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F5F0E6; /* Светло-бежевый фон */
+            --panel-bg: #FCFAF5; /* Почти белый с теплым оттенком */
+            --text-main: #3E362E; /* Темно-коричневый, почти черный */
+            --text-muted: #7A6F63; /* Серо-коричневый для деталей */
+            --gold: #C5A880; /* Золотисто-бежевый акцент */
+            --gold-hover: #B3966D;
+            --border-color: #E3D7C5;
+            --btn-bg: #F5F0E6;
+            --btn-active-bg: #C5A880;
+            --btn-active-text: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            background-image: radial-gradient(circle at top, #FFFDF8 0%, var(--bg-color) 100%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--panel-bg);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(62, 54, 46, 0.08), 0 0 0 1px var(--border-color);
+            padding: 50px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 30px;
+        }
+
+        .school-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 8px;
+        }
+
+        .prompt {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: var(--text-main);
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .day-btn {
+            background-color: var(--btn-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 14px 24px;
+            font-family: 'Lora', serif;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            min-width: 120px;
+        }
+
+        .day-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(197, 168, 128, 0.15);
+        }
+
+        .day-btn.active {
+            background-color: var(--btn-active-bg);
+            border-color: var(--btn-active-bg);
+            color: var(--btn-active-text);
+            box-shadow: 0 8px 20px rgba(197, 168, 128, 0.3);
+        }
+
+        .schedule-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .schedule-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .day-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--gold);
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: capitalize;
+        }
+
+        .lesson-list {
+            list-style: none;
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s;
+        }
+
+        .lesson-item:last-child {
+            border-bottom: none;
+        }
+
+        .lesson-item:hover {
+            background-color: #F9F6F0;
+        }
+
+        .lesson-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--gold);
+            width: 40px;
+            flex-shrink: 0;
+        }
+
+        .lesson-info {
+            flex-grow: 1;
+        }
+
+        .lesson-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .lesson-details {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Стили для пустого дня */
+        .empty-day {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 18px;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 30px 20px; }
+            .title { font-size: 24px; }
+            .buttons-container { flex-direction: column; }
+            .day-btn { width: 100%; }
+            .lesson-item { flex-direction: column; align-items: flex-start; }
+            .lesson-number { margin-bottom: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <div class="school-name">Школа «Эвридиум»</div>
+        <h1 class="title">Расписание уроков</h1>
+        <div class="subtitle">9 «А» класс</div>
+    </header>
+
+    <div class="prompt">Выберите день недели</div>
+
+    <div class="buttons-container" id="buttons-container">
+        <button class="day-btn" data-day="monday">Понедельник</button>
+        <button class="day-btn" data-day="tuesday">Вторник</button>
+        <button class="day-btn" data-day="wednesday">Среда</button>
+        <button class="day-btn" data-day="thursday">Четверг</button>
+        <button class="day-btn" data-day="friday">Пятница</button>
+        <button class="day-btn" data-day="saturday">Суббота</button>
+        <!-- Воскресенье оставлено пустым (как обычно и бывает в школе), но кнопка есть по условию "7 кнопок" -->
+        <button class="day-btn" data-day="sunday">Воскресенье</button>
+    </div>
+
+    <div id="schedule-display">
+        <!-- Контент будет генерироваться через JS -->
+    </div>
+</div>
+
+<script>
+    // Данные расписания на основе предоставленной фотографии
+    const scheduleData = {
+        monday: [
+            { num: 1, name: 'Разговоры о важном', room: 'каб. 204', teacher: 'Смирнова Е. В.' },
+            { num: 2, name: 'Алгебра', room: 'каб. 308', teacher: 'Волкова Т. А.' },
+            { num: 3, name: 'История России', room: 'каб. 312', teacher: 'Соколов А. П.' },
+            { num: 4, name: 'Физика', room: 'каб. 402', teacher: 'Морозов Д. И.' },
+            { num: 5, name: 'Английский язык', room: 'каб. 210 / 211', teacher: 'Белова О. Н.' },
+            { num: 6, name: 'Физкультура', room: 'Спортзал № 1', teacher: 'Громов И. В.' }
+        ],
+        tuesday: [
+            { num: 1, name: 'Алгебра', room: 'каб. 308', teacher: 'Волкова Т. А.' },
+            { num: 2, name: 'Физика', room: 'каб. 402', teacher: 'Морозов Д. И.' },
+            { num: 3, name: 'Английский язык', room: 'каб. 210 / 211', teacher: 'Белова О. Н.' },
+            { num: 4, name: 'Литература', room: 'каб. 204', teacher: 'Смирнова Е. В.' },
+            { num: 5, name: 'Информатика', room: 'каб. 105 / 106', teacher: 'Новиков Р. С.' },
+            { num: 6, name: 'География', room: 'каб. 315', teacher: 'Зайцева Н. Ю.' }
+        ],
+        wednesday: [
+            { num: 1, name: 'Русский язык', room: 'каб. 204', teacher: 'Смирнова Е. В.' },
+            { num: 2, name: 'Геометрия', room: 'каб. 308', teacher: 'Волкова Т. А.' },
+            { num: 3, name: 'Биология', room: 'каб. 410', teacher: 'Лебедева М. С.' },
+            { num: 4, name: 'Химия', room: 'каб. 405', teacher: 'Орлова К. В.' },
+            { num: 5, name: 'Обществознание', room: 'каб. 312', teacher: 'Соколов А. П.' },
+            { num: 6, name: 'Английский язык', room: 'каб. 210 / 211', teacher: 'Белова О. Н.' }
+        ],
+        thursday: [
+            { num: 1, name: 'Геометрия', room: 'каб. 308', teacher: 'Волкова Т. А.' },
+            { num: 2, name: 'Русский язык', room: 'каб. 204', teacher: 'Смирнова Е. В.' },
+            { num: 3, name: 'Всеобщая история', room: 'каб. 312', teacher: 'Соколов А. П.' },
+            { num: 4, name: 'Обществознание', room: 'каб. 312', teacher: 'Соколов А. П.' },
+            { num: 5, name: 'Биология', room: 'каб. 410', teacher: 'Лебедева М. С.' },
+            { num: 6, name: 'Физкультура', room: 'Спортзал № 1', teacher: 'Громов И. В.' }
+        ],
+        friday: [
+            { num: 1, name: 'Литература', room: 'каб. 204', teacher: 'Смирнова Е. В.' },
+            { num: 2, name: 'Химия', room: 'каб. 405', teacher: 'Орлова К. В.' },
+            { num: 3, name: 'Алгебра', room: 'каб. 308', teacher: 'Волкова Т. А.' },
+            { num: 4, name: 'Физика', room: 'каб. 402', teacher: 'Морозов Д. И.' },
+            { num: 5, name: 'География', room: 'каб. 315', teacher: 'Зайцева Н. Ю.' },
+            { num: 6, name: 'Литература', room: 'каб. 204', teacher: 'Смирнова Е. В.' }
+        ],
+        saturday: [
+            { num: 1, name: 'Алгебра (профиль)', room: 'каб. 308', teacher: 'Волкова Т. А.' },
+            { num: 2, name: 'Информатика', room: 'каб. 105 / 106', teacher: 'Новиков Р. С.' },
+            { num: 3, name: 'Основы безопасности (ОБЗР)', room: 'каб. 112', teacher: 'Крылов С. М.' },
+            { num: 4, name: 'Проектная деятельность', room: 'каб. 201', teacher: 'Тьюторский центр' }
+        ],
+        sunday: [] // Выходной
+    };
+
+    const daysMap = {
+        monday: 'Понедельник',
+        tuesday: 'Вторник',
+        wednesday: 'Среда',
+        thursday: 'Четверг',
+        friday: 'Пятница',
+        saturday: 'Суббота',
+        sunday: 'Воскресенье'
+    };
+
+    const displayContainer = document.getElementById('schedule-display');
+    const buttons = document.querySelectorAll('.day-btn');
+
+    function renderSchedule(dayKey) {
+        displayContainer.innerHTML = ''; // Очищаем контейнер
+
+        const lessons = scheduleData[dayKey];
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'schedule-content active';
+
+        // Заголовок дня
+        const dayTitle = document.createElement('h2');
+        dayTitle.className = 'day-title';
+        dayTitle.textContent = daysMap[dayKey];
+        contentDiv.appendChild(dayTitle);
+
+        if (lessons && lessons.length > 0) {
+            const list = document.createElement('ul');
+            list.className = 'lesson-list';
+
+            lessons.forEach(lesson => {
+                const item = document.createElement('li');
+                item.className = 'lesson-item';
+
+                item.innerHTML = `
+                    <div class="lesson-number">${lesson.num}</div>
+                    <div class="lesson-info">
+                        <div class="lesson-name">${lesson.name}</div>
+                        <div class="lesson-details">${lesson.room} • ${lesson.teacher}</div>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+            contentDiv.appendChild(list);
+        } else {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'empty-day';
+            emptyDiv.textContent = 'В этот день уроков нет. Отдыхайте!';
+            contentDiv.appendChild(emptyDiv);
+        }
+
+        displayContainer.appendChild(contentDiv);
+    }
+
+    // Обработчик кликов
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Убираем активный класс у всех кнопок
+            buttons.forEach(b => b.classList.remove('active'));
+            // Добавляем активный класс нажаттой кнопке
+            btn.classList.add('active');
+            // Рендерим расписание
+            renderSchedule(btn.dataset.day);
+        });
+    });
+
+    // Автоматически открываем понедельник при загрузке
+    document.querySelector('[data-day="monday"]').click();
+
+</script>
+
+</body>
+  </html>
